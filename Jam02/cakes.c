@@ -24,7 +24,19 @@ struct flavor* makeFlavor(const char* name, float cals) {
   return c;
 }
 
-void computeCalories(struct cupcake* cakes, int n) {
+void computeCalories(struct cupcake* cakes, int size) {
+  float max_calories = 0.0;
+  struct cupcake most_calories;
+
+  for (int i = 0; i < size; i ++) {
+    float total = cakes[i].cake->calories + cakes[i].frosting->calories;
+    if (total > max_calories) {
+      max_calories = total;
+      most_calories = cakes[i];
+    }
+    printf("Cupcake %d) %s with %s (calories: %f)\n", i, cakes[i].cake->name, cakes[i].frosting->name, total);
+  }
+  printf("The cup cake with the most calories is %s cake with %s frosting\n", most_calories.cake->name, most_calories.frosting->name);
 }
 
 int main() {
@@ -42,4 +54,8 @@ int main() {
   cakes[2].frosting = strawberry; 
 
   computeCalories(cakes, 3);
+  free(redVelvet);
+  free(chocolate);
+  free(strawberry);
+  free(creamcheese);
 }
