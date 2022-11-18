@@ -16,10 +16,60 @@ struct chunk {
   struct chunk *next;
 };
 
+// Prints out stats for memory bytes and memory blocks
 void memstats(struct chunk* freelist, void* buffer[], int len) {
+  // Holds the value for total memory blocks
+  int totalblocks = 0;
+  // Holds value for free memory blocks
+  int freeblocks = 0;
+  // Holds value for used memory blocks
+  int usedblocks = 0;
+
+  // Holds value for total memory bytes
+  int totalmem = 0;
+  // Holds value for free memory bytes
+  int freemem = 0;
+  // Holds value for used memory bytes
+  int usedmem = 0;
+
+  // Goes through each value in the buffer
+  for(int i = 0; i < len; i++) {
+    if (buffer[i] != NULL) {
+      // Calculation for total memory blocks
+      totalblocks++;
+      // Calculation for used memory blocks
+      usedblocks++;
+      // Calculation for used memory
+      usedmem = usedmem + *(int*)buffer[i];
+    }
+  }
+
+  // Checks that freelist exists
+  while (freelist != NULL) {
+    // Calculation for total memory blocks
+    totalblocks++;
+    // Calculation for free memory blocks
+    freeblocks++;
+    // Calculation for free memory
+    freemem = freemem + freelist->size;
+    // Calculation for used memory
+    usedmem = usedmem + freelist->used + freelist->size;
+    // Calculation for total memory
+    totalmem = freemem + usedmem;
+    // Moves to next item in the free list
+    freelist = freelist->next;
+  }
+
+  // Calculates for underutilized memory
+  int underMem = usedmem / totalmem;
+
+  printf("Total Blocks: %d Free Blocks %d Used Blocks: %d\n", totalblocks, freeblocks, usedblocks);
+  printf("Total Memory Allocated: %d Free Memory: %d Used Memory: %d\n", totalmem, freemem, usedmem);
+  printf("Underutilized Memory: %d\n", underMem);
+
 }
 
-int main ( int argc, char* argv[]) {
+int main (int argc, char* argv[]) {
 
   printf("Starting test..\n");
 
