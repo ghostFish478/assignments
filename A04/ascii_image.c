@@ -57,15 +57,16 @@ char assignASCII(unsigned char redI, unsigned char greenI, unsigned char blueI) 
   else if(intensity >= 226 && intensity <= 255) {
     return ' ';
   }
+  return '.';
 }
 
 int main(int argc, char** argv) {
+  // Holds value for the name of the input file
+  const char* inputfile = argv[1];
   // Holds value for a character associated with a RGB intensity
   char intensityASCII;
-  // Holds value for width
-  int* w;
-  // Holds value for height
-  int* h;
+  // Holds value for width, and height
+  int w, h;
 
   // Statement for incorrect number of arguments given
   if (argc != 2) {
@@ -74,18 +75,19 @@ int main(int argc, char** argv) {
   }
 
   // Holds value for a read ppm 2D array based on the given file name, width, and height
-  struct ppm_pixel** ppmarray = read_ppm_2d(argv[1], &w, &h);
+  struct ppm_pixel** ppmarray = read_ppm_2d(inputfile, &w, &h);
 
   // Print out each character in the ppm array based on intensity calculation
-  for(int i = 0; i < w; i++) {
-    for(int j = 0; j < h; j++) {
+  for(int i = 0; i < h; i++) {
+    for(int j = 0; j < w; j++) {
       // Calculates the overall intensity and the associated character
       intensityASCII = assignASCII(ppmarray[i][j].red, ppmarray[i][j].green, ppmarray[i][j].blue);
       printf("%c", intensityASCII);
     }
+    printf("\n");
   }
 
-  for (int k = 0; k < w; k++) {
+  for (int k = 0; k < h; k++) {
     free(ppmarray[k]);
   }
   free(ppmarray);

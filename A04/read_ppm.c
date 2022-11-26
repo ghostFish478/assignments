@@ -1,7 +1,7 @@
 /***************************************************
  * read_ppm.c
  * Author: Bethany Ho
- * Date: 10/9/2022
+ * Date: 11/25/2022
  * Contains function for reading a PPM file
  */
 
@@ -26,6 +26,7 @@
 struct ppm_pixel** read_ppm_2d(const char* filename, int* w, int* h) {
   // Holds the value of the contents of the file
   FILE* infile;
+  char line[1024];
 
   // Opens the file
   infile = fopen(filename, "r");
@@ -35,31 +36,29 @@ struct ppm_pixel** read_ppm_2d(const char* filename, int* w, int* h) {
   }
   
   // Reads the header
-  fgets(infile);
-  fgets(infile);
-  // Scans in the width and height of the image from teh file
-  fscanf("%d %d", &w, &h);
-  // Return NULL if width or height is not found
-  if (w == NULL | h == NULL) {
+  fgets(line,1024,infile);
+  fgets(line,1024,infile);
+  // Scans in the width and height of the image from the file
+  if (fscanf(infile," %d %d", w, h) != EOF) {
+    // Grabs info from the two other lines in the ppm file if height and width
+    // are found
+    fgets(line,1024,infile);
+    fgets(line,1024,infile);
+  // Returns NULL if not found
+  } else {
     printf("Unable to allocate memory for %s", filename);
     return NULL;
   }
-  // printf("Testing file %s %d %d:", filename, w, h);
-  printf("Reading file %s %d %d:", filename, w, h);
+
+  printf("Reading file %s %d %d:", filename, *w, *h);
+  printf("\n");
 
   // Allocate memory for the array holding the information from the image
-  struct ppm_pixel* array = malloc(w * sizeof(struct ppm_pixel*));
-  for (int i = 0; i < w; i++) {
-    struct ppm_pixel* array[i] = malloc(h * sizeof(struct ppm_pixel*));
+  struct ppm_pixel** array = malloc(*h * sizeof(struct ppm_pixel*));
+  for (int i = 0; i < *h; i++) {
+    array[i] = malloc(*w * sizeof(struct ppm_pixel));
+    fread(array[i], sizeof(struct ppm_pixel), *w, infile);
   }
-
-  // Read the pixels as binary
-  for(int j = 0; j < w; j++) {
-    for(int k = 0; k < h; k++) {
-      fread(array[j][k].red, 1, 1, infile);
-      fread(array[j][k].green, 1, 1, infile);
-      fread(array[j][k].blue, 1, 1, infile);
-    }
-  }
+  fclose(infile);
   return array;
 }

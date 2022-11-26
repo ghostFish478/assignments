@@ -14,13 +14,14 @@ int main() {
   const char* filename = "feep-raw.ppm";
   // load feep-raw and print out the grid of pixels
   struct ppm_pixel** ppmarray = read_ppm_2d(filename, &w, &h);
-    for(int i = 0; i < w; i++) {
-      for(int j = 0; j < h; j++) {
+    for(int i = 0; i < h; i++) {
+      for(int j = 0; j < w; j++) {
         printf("(%u, %u, %u)", ppmarray[i][j].red, ppmarray[i][j].green, ppmarray[i][j].blue);
       }
+      printf("\n");
     }
 
-    for (int k = 0; k < w; k++) {
+    for (int k = 0; k < h; k++) {
       free(ppmarray[k]);
     }
     free(ppmarray);
