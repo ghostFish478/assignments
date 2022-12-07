@@ -22,16 +22,21 @@ struct ppm_pixel** read_ppm_2d(const char* filename, int* w, int* h) {
   
   // Reads the header
   fgets(line,1024,infile);
-  // fgets(line,1024,infile);
+  fgets(line,1024,infile);
+  // Checks for commments
+  while(line[0] == '#') {
+    fgets(line,1024,infile);
+  }
   // Scans in the width and height of the image from the file
-  fscanf(infile," %d %d", w, h);
-  fgets(line,1024,infile);
-  // Return NULL if width or height is not found
-  // if (w == NULL | h == NULL) {
-  //   printf("Unable to allocate memory for %s", filename);
-  //   return NULL;
-  // }
-  fgets(line,1024,infile);
+  if (sscanf(line,"%d %d", w, h) != EOF) {
+    // Grabs info from the two other lines in the ppm file if height and width
+    // are found
+    fgets(line,1024,infile);
+  // Returns NULL if not found
+  } else {
+    printf("Unable to allocate memory for %s", filename);
+    return NULL;
+  }
 
   printf("Reading file %s with width %d and height %d:\n", filename, *w, *h);
 

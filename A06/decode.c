@@ -54,7 +54,7 @@ int powerdec(int bival, int powval){
   // Holds a part of a decimal value based on a given exponent
   int decimal = 0;
   // Holds value for power of two
-  int powertwo = 2;
+  int powertwo = 1;
 
   // Finds the power of two
   for(int i = 0; i < powval; i++) {
@@ -87,7 +87,7 @@ char* asciiconversion(int* givenString, int maxchar, int w, int h) {
   // Goes through each integer in givenString
   for (int i = 0; i < (w * h * 3); i = i + 8) {
     // Goes through each integer in givenString
-    for(int j = 1; j < 8; j++) {
+    for(int j = 0; j < 8; j++) {
       // Adds each part of the decimal value based upon the given power value
       finaldec += powerdec(givenString[i+j],power);
       // Decreases power by 1
@@ -95,8 +95,8 @@ char* asciiconversion(int* givenString, int maxchar, int w, int h) {
     }
 
     // Divides decimal value to get the ASCII character decimal value
-    finaldec = finaldec/4;
-    printf("%d\n", finaldec);
+    // finaldec = finaldec/4;
+    // printf("%d\n", finaldec);
     // Casts decimal value into character
     asciistring[k] = (char)(finaldec);
 
@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
   }
 
   // Holds value for the name of the input file
-  const char* inputfile = argv[1];
+  char* inputfile = argv[1];
   // Holds width and height, respectively
   int w, h, maximumchar;
 
@@ -143,9 +143,9 @@ int main(int argc, char** argv) {
   // Gets the ASCII character phrase by converting the binary into ASCII
   char* asciiphrase = asciiconversion(binarystring,maximumchar,w,h);
   printf("Max number of characters in the image: %d\n", maximumchar);
-  printf("%s\n",asciiphrase);
+  printf("%s",asciiphrase);
 
-  for (int k = 0; k < w; k++) {
+  for (int k = 0; k < h; k++) {
       free(canvas[k]);
   }
   free(canvas);

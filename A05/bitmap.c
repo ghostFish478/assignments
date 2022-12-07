@@ -17,7 +17,6 @@ int main() {
   // Loops thorough 8x8 matrix for printing values
   for(int i = 0; i < 8; i++) {
     for(int j = 0; j < 8; j++) {
-      // leftmask = img << loop;
       // Creates left mask depending on how many bits are masked through loop
       leftmask = 0x1ul << 63;
       maskedimg = img << loop;

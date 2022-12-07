@@ -125,6 +125,52 @@ char checkBombs(char* minematrix, int space, int mrow, int ncolumn) {
       check++;
     }
   }
+  // Checks for first row edge cases
+  else if (space < ncolumn && space > 0) {
+    // Checks W bomb
+    if (minematrix[space - 1] == 'X') {
+      check++;
+    }
+    // Checks E bomb
+    if (minematrix[space + 1] == 'X') {
+      check++;
+    }
+    // Checks SW bomb
+    if (minematrix[space + ncolumn - 1] == 'X') {
+      check++;
+    }
+    // Checks S bomb
+    if (minematrix[space + ncolumn] == 'X') {
+      check++;
+    }
+    // Checks SE bomb
+    if (minematrix[space + ncolumn + 1] == 'X') {
+      check++;
+    }
+  }
+  // Checks for bottom row edge cases
+  else if (space > ncolumn - 1 && space < (ncolumn * mrow)) {
+    // Checks NW bomb
+    if (minematrix[space - ncolumn - 1] == 'X') {
+      check++;
+    }
+    // Checks N bomb
+    if (minematrix[space - ncolumn] == 'X') {
+      check++;
+    }
+    // Checks NE bomb
+    if (minematrix[space - ncolumn + 1] == 'X') {
+      check++;
+    }
+    // Checks W bomb
+    if (minematrix[space - 1] == 'X') {
+      check++;
+    }
+    // Checks E bomb
+    if (minematrix[space + 1] == 'X') {
+      check++;
+    }
+  }
   // Checks for right edge cases
   else if (space % ncolumn == ncolumn - 1) {
     // Checks NW bomb
@@ -230,13 +276,23 @@ char* solveMatrix(char* minematrix, int mrow, int ncolumn) {
   }
 
   // Prints out each value of the minematrix in the given grid format
-  for (int x = 0; x < (mrow * ncolumn); x = x + ncolumn) {
-    printf("%c ", minematrix[x]);
-    for (int y = 1; y < ncolumn; y++) {
-      printf("%c ", minematrix[x+y]);
+  // for (int x = 0; x < (mrow * ncolumn); x = x + ncolumn) {
+  //   printf("%c ", minematrix[x]);
+  //   for (int y = 1; y < ncolumn; y++) {
+  //     printf("%c ", minematrix[x+y]);
+  //   }
+  //   printf("%c", '\n');
+  // }
+
+  for (int x = 0; x < (mrow * ncolumn); x++) {
+    if (x % ncolumn == 0) {
+      printf("%c", '\n');
+      printf("%c ", minematrix[x]);
+    } else {
+      printf("%c ", minematrix[x]);
     }
-    printf("%c", '\n');
   }
+
   return minematrix;
 }
 

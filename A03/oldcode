@@ -1,0 +1,30 @@
+  //   // Moves through the list for the location to insert the new restaurant
+  //   while(temp->stars < head->stars && temp->stars > head->next->stars) {
+  //     head = head->next;
+  //   }
+  //   // Changes the location of next for temp and head
+  //   temp->next = head->next->next;
+  //   head->next = temp;
+  //   // Assigns head to the original head value again
+  //   head = firstHead;
+  // }
+  // // Checks if the new restaurant is less than the first and second element of the list
+  // else if (temp->stars < head->stars && temp->stars < head->next->stars) {
+  //   // Keeps value of the original head
+  //   struct restaurantR* firstHead = head;
+  //   // Moves through the list for the location to insert the new restaurant
+  //   while(temp->stars < head->stars && temp->stars < head->next->stars) {
+  //     head = head->next;
+  //   }
+  //   // Changes the location of next for temp and head
+  //   temp->next = head->next->next;
+  //   head->next = temp;
+  //   // Assigns head to the original head value again
+  //   head = firstHead;
+
+      // if (head->next == NULL) {
+    //   head->next = temp;
+    //   temp->next = NULL;
+    // }
+
+     //&& temp->stars > head->next->stars //if (temp->stars < head->stars)

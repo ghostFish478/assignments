@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
   // Writes glitches to new file
   write_ppm_2d(newfilename,canvas,w,h);
 
-  for (int k = 0; k < w; k++) {
+  for (int k = 0; k < h; k++) {
       free(canvas[k]);
   }
   free(canvas);
