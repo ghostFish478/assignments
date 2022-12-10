@@ -149,7 +149,7 @@ char checkBombs(char* minematrix, int space, int mrow, int ncolumn) {
     }
   }
   // Checks for bottom row edge cases
-  else if (space > ncolumn - 1 && space < (ncolumn * mrow)) {
+  else if (space > (ncolumn - 1) * mrow && space < ncolumn * mrow) {
     // Checks NW bomb
     if (minematrix[space - ncolumn - 1] == 'X') {
       check++;
@@ -276,14 +276,6 @@ char* solveMatrix(char* minematrix, int mrow, int ncolumn) {
   }
 
   // Prints out each value of the minematrix in the given grid format
-  // for (int x = 0; x < (mrow * ncolumn); x = x + ncolumn) {
-  //   printf("%c ", minematrix[x]);
-  //   for (int y = 1; y < ncolumn; y++) {
-  //     printf("%c ", minematrix[x+y]);
-  //   }
-  //   printf("%c", '\n');
-  // }
-
   for (int x = 0; x < (mrow * ncolumn); x++) {
     if (x % ncolumn == 0) {
       printf("%c", '\n');
