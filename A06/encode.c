@@ -13,7 +13,8 @@
  * @param h the height
  * @return canvas
  */
-struct ppm_pixel** encode(struct ppm_pixel** canvas, char* binary, int w, int h) {
+
+struct ppm_pixel** encode(struct ppm_pixel** canvas, unsigned char* binary, int w, int h) {
   // Holds counter for going through binary numbers
   int i = 0;
   // Holds counter for going through canvas height
@@ -22,26 +23,58 @@ struct ppm_pixel** encode(struct ppm_pixel** canvas, char* binary, int w, int h)
   int k = 0;
 
   // Goes through each character in the binary string and assigns it to RGB values
-  while(i < strlen(binary)) {
-    canvas[j][k].red = binary[i];
-    if(i + 1 < strlen(binary)) {
-      canvas[j][k].green = binary[i + 1];
-    }
-    if(i + 2 < strlen(binary)) {
-      canvas[j][k].blue = binary[i + 2];
+  while(i < (sizeof(binary)/8)) {
+    if(binary[i] == 0) {
+      // Bit mask
+      unsigned long leftmask = 1 << 0;
+      // Shift canvas color
+      canvas[j][k].red = (canvas[j][k].red & ~leftmask) | (0x0ul << 0);
+    } else {
+      // Bit mask
+      unsigned long leftmask = 1 << 0;
+      // Shift canvas color
+      canvas[j][k].red = (canvas[j][k].red & ~leftmask) | (0x1ul << 0);
     }
 
-    // Increments counters for binary number, height, width;
-    i++;
-    j++;
+    if(i + 1 < (sizeof(binary)/8)) {
+      if(binary[i+1] == 0) {
+        // Bit mask
+        unsigned long leftmask = 1 << 0;
+        // Shift canvas color
+        canvas[j][k].green = (canvas[j][k].green & ~leftmask) | (0x0ul << 0);
+      } else {
+        // Bit mask
+        unsigned long leftmask = 1 << 0;
+        // Shift canvas color
+        canvas[j][k].green = (canvas[j][k].green & ~leftmask) | (0x1ul << 0);
+      }
+    }
+    if(i + 2 < (sizeof(binary)/8)) {
+      if(binary[i+2] == 0) {
+        // Bit mask
+        unsigned long leftmask = 1 << 0;
+        // Shift canvas color
+        canvas[j][k].blue = (canvas[j][k].blue & ~leftmask) | (0x0ul << 0);
+      } else {
+        // Bit mask
+        unsigned long leftmask = 1 << 0;
+        // Shift canvas color
+        canvas[j][k].blue = (canvas[j][k].blue & ~leftmask) | (0x1ul << 0);
+      }
+    }
+
+    // Increments counters for binary number, width;
+    i = i + 3;
     k++;
-    // Checks if k needs to be reset
+    // Checks if j and k needs to be reset
     if (k > w) {
       k = 0;
+      j++;
     }
   }
   return canvas;
 }
+
 
 /**
  * Converts a phrase into a string of binary numbers
@@ -49,18 +82,18 @@ struct ppm_pixel** encode(struct ppm_pixel** canvas, char* binary, int w, int h)
  * @param phrase the given phrase
  * @return binaryarray
  */
-char* convertbi(char* phrase) {
+unsigned char* convertbi(char* phrase) {
   // Allocates memory to hold the binary values of the given characters
-  char* binaryarray = malloc(strlen(phrase) * sizeof(int) * 8);
+  unsigned char* binaryarray = malloc((strlen(phrase) + 1) * sizeof(char) * 8);
   // Holds values for a given character, and the character with the bit mask
-  char letter, maskletter;
+  unsigned char letter, maskletter;
   // Mask for getting left-most bit
   unsigned char leftmask = 0x1ul;
   // Holds counter for binary array
   int k;
 
   // Loops through each character in phrase
-  for(int i = 0; i < strlen(phrase); i++) {
+  for(int i = 0; i < (strlen(phrase)+1); i++) {
     // j is used to determine the shift for letter
     for(int j = 0; j < 8; j++) {
       // Holds character value
@@ -73,9 +106,11 @@ char* convertbi(char* phrase) {
       // based on letter and leftmask
       maskletter = letter & leftmask;
       if(maskletter == 0) {
-        binaryarray[k] = '0';
+        binaryarray[k] = 0;
+        printf("%d", binaryarray[k]);
       } else {
-        binaryarray[k] = '1';
+        binaryarray[k] = 1;
+        printf("%d", binaryarray[k]);
       }
       // Increases counter to go through binary array
       k++;
@@ -122,16 +157,18 @@ int main(int argc, char** argv) {
   scanf("%s",phrase);
 
   // Converts phrase into binary
-  char* binaryarray = convertbi(phrase);
+  unsigned char* binaryarray = convertbi(phrase);
+  printf("\nBinary Array: %hhn\n", binaryarray);
+
   // Uses binary values for a new image
   struct ppm_pixel** newcanvas = encode(canvas,binaryarray,w,h);
 
   // Holds value for a new string for the new file name for the outfile
   char newfilename[sizeof(inputfile) + 12 * sizeof(char)];
   // Shortens original file name for new file name
-  strncpy(newfilename,inputfile,strlen(inputfile)-4);
+  strncpy(newfilename,inputfile,strlen(inputfile)-3);
   // Appends 0 to the shortened original file name
-  newfilename[strlen(inputfile)-5] = '\0';
+  newfilename[strlen(inputfile)-4] = '\0';
   // Creates the new file name
   strcat(newfilename,"-encoded.ppm");
 

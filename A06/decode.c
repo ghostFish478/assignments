@@ -94,9 +94,6 @@ char* asciiconversion(int* givenString, int maxchar, int w, int h) {
       power = power - 1;
     }
 
-    // Divides decimal value to get the ASCII character decimal value
-    // finaldec = finaldec/4;
-    // printf("%d\n", finaldec);
     // Casts decimal value into character
     asciistring[k] = (char)(finaldec);
 
