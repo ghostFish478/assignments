@@ -133,64 +133,47 @@ int main(int argc, char* argv[]) {
   char newfilename[1000];
 
   // generate pallet
-  struct ppm_pixel* palette = malloc(maxIterations * sizeof(struct ppm_pixel));
+  // struct ppm_pixel* palette = malloc(maxIterations * sizeof(struct ppm_pixel));
+  // for (int i = 0; i < maxIterations; i++) {
+  //   palette[i] = newpalette();
+  // }
+  shmidpalette = shmget(IPC_PRIVATE, maxIterations * sizeof(struct ppm_pixel), 0644 | IPC_CREAT);
+  if (shmidpalette == -1) {
+    perror("Error: cannot initialize shared memory\n");
+    exit(1);
+  }
+  struct ppm_pixel* palette = shmat(shmidpalette, NULL, 0);
+  if (palette == (void*) -1) {
+    perror("Error: cannot access shared memory\n");
+    exit(1);
+  }
+
   for (int i = 0; i < maxIterations; i++) {
     palette[i] = newpalette();
   }
-  // shmidpalette = shmget(IPC_PRIVATE, maxIterations * sizeof(struct ppm_pixel), 0644 | IPC_CREAT);
-  // if (shmidpalette == -1) {
-  //   perror("Error: cannot initialize shared memory\n");
-  //   exit(1);
-  // }
-  // struct ppm_pixel* palette = shmat(shmidpalette, NULL, 0);
-  // if (palette == (void*) -1) {
-  //   perror("Error: cannot access shared memory\n");
-  //   exit(1);
-  // }
 
   // Gets start time
   gettimeofday(&tstart, NULL);
 
   for (int k = 0; k < numProcesses; k++) {
     int xcol, ycol, xrow, yrow;
-    // float newxmin, newxmax, newymin, newymax;
     // change coordinate
     if(k == 0) {
-      // newxmin = xmin;
-      // newxmax = (xmax-xmin)/2 + xmin;
-      // newymin = ymin;
-      // newymax = (ymax-ymin)/2 + ymin;
-
       xcol = 0;
       ycol = size/2;
       xrow = 0;
       yrow = size/2;
     } else if (k == 1) {
-      // newxmin = (xmax-xmin)/2 + xmin;
-      // newxmax = xmax;
-      // newymin = ymin;
-      // newymax = (ymax-ymin)/2 + ymin;
-
       xcol = size/2;
       ycol = size;
       xrow = 0;
       yrow = size/2;
     } else if (k == 2) {
-      // newxmin = xmin;
-      // newxmax = (xmax-xmin)/2 + xmin;
-      // newymin = (ymax-ymin)/2 + ymin;
-      // newymax = ymax;
-
       xcol = 0;
       ycol = size/2;
       xrow = size/2;
       yrow = size;
     } else if (k == 3) {
-      // newxmin = (xmax-xmin)/2 + xmin;
-      // newxmax = xmax;
-      // newymin = (ymax-ymin)/2 + ymin;
-      // newymax = ymax;
-
       xcol = size/2;
       ycol = size;
       xrow = size/2;
@@ -273,18 +256,18 @@ int main(int argc, char* argv[]) {
     perror("Error: Mandelbrotset cannot remove shared memory\n");
     exit(1);
   }
-  free(palette);
+  // free(palette);
   free(mandelbrotset);
 
-  // if(shmdt(palette) == -1) {
-  //   perror("Error: cannot detach from shared memory\n");
-  //   exit(1);
-  // }
+  if(shmdt(palette) == -1) {
+    perror("Error: Palette cannot detach from shared memory\n");
+    exit(1);
+  }
 
-  // if(shmctl(shmidpalette, IPC_RMID, 0) == -1) {
-  //   perror("Error: cannot remove shared memory\n");
-  //   exit(1);
-  // }
+  if(shmctl(shmidpalette, IPC_RMID, 0) == -1) {
+    perror("Error: cannot remove shared memory\n");
+    exit(1);
+  }
 
   // for(int z = 0; z < size; z++) {
   //   if (shmdt(mandelbrotset[z]) == -1) {
