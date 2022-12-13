@@ -17,6 +17,7 @@ struct ppm_pixel newpalette() {
   return color;
 }
 
+// Holds variables for mandelbrot
 struct data {
   // Holds variables for size, location, iterations, id, and boundaries for mandelbrot
   int size, xcol, ycol, xrow, yrow, maxIterations, id;
@@ -27,6 +28,7 @@ struct data {
   struct ppm_pixel** mandelbrotset;
 };
 
+// Runs mandelbrot algorithm and allocates colors
 void *mandelbrot(void* data) {
   struct data *mandelthread = (struct data *) data;
   for(float i = 0; i < mandelthread->size; i++) {
@@ -159,6 +161,7 @@ int main(int argc, char* argv[]) {
       xrow = size/2;
       yrow = size;
     }
+    // Creates threads
     pthread_create(&threads[k], NULL, mandelbrot, &mandelthread[k]);
     printf("Thread %d) sub-image block: cols (%d, %d) to rows (%d, %d)\n", mandelthread[k].id, xcol, ycol, xrow, yrow);
   }
@@ -166,6 +169,7 @@ int main(int argc, char* argv[]) {
   // Joins threads
   for (int l = 0; l < 4; l++) {
     pthread_join(threads[l], NULL); 
+    printf("Thread %d) finished", mandelthread[l].id);
   }
 
   // Gets end time
@@ -189,5 +193,6 @@ int main(int argc, char* argv[]) {
   free(mandelbrotset);
   free(palette);
   free(threads);
+  free(mandelthread);
   return 0;
 }
